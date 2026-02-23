@@ -1,1 +1,2 @@
-# ApexPlanet_internship
+TASK 1 COMPLETED FOR INTERNSHIP
+THE LANDING PAGES # ApexPlanet_internship
