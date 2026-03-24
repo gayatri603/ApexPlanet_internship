@@ -1,51 +1,92 @@
-const form = document.getElementById("contactForm");
-const message = document.getElementById("formMessage");
 
-form.addEventListener("submit", function(e) {
-  e.preventDefault();
+function toggleMenu(){
+  document.getElementById("navLinks").classList.toggle("active");
+}
 
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const userMessage = document.getElementById("message").value.trim();
 
-  const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+function toggleTheme(){
+  document.body.classList.toggle("light");
+}
 
-  if (name === "" || email === "" || phone === "" || userMessage === "") {
-    message.style.color = "red";
-    message.textContent = "All fields are required!";
-    return;
-  }
+let list = document.getElementById("list");
 
-  if (!email.match(emailPattern)) {
-    message.style.color = "red";
-    message.textContent = "Please enter a valid email!";
-    return;
-  }
+function addTask(){
+  let task = document.getElementById("task").value;
+  if(task==="") return;
 
-  if (phone.length < 10) {
-    message.style.color = "red";
-    message.textContent = "Phone number must be at least 10 digits!";
-    return;
-  }
+  let li = document.createElement("li");
+  li.innerHTML = `${task} <button onclick="this.parentElement.remove(); saveTasks()">❌</button>`;
 
-  message.style.color = "green";
-  message.textContent = "Form submitted successfully!";
-  form.reset();
-});
-const galleryContainer = document.getElementById("galleryContainer");
+  list.appendChild(li);
+  saveTasks();
+}
 
-const images = [
-  "https://picsum.photos/300?random=1",
-  "https://picsum.photos/300?random=2",
-  "https://picsum.photos/300?random=3",
-  "https://picsum.photos/300?random=4",
-  "https://picsum.photos/300?random=5",
-  "https://picsum.photos/300?random=6"
+function saveTasks(){
+  localStorage.setItem("tasks", list.innerHTML);
+}
+
+function loadTasks(){
+  list.innerHTML = localStorage.getItem("tasks") || "";
+}
+loadTasks();
+
+
+let products = [
+  {name:"Phone",price:500},
+  {name:"Laptop",price:1000},
+  {name:"Shirt",price:50},
+  {name:"Shoes",price:80}
 ];
 
-images.forEach(src => {
-  const img = document.createElement("img");
-  img.src = src;
-  galleryContainer.appendChild(img);
+function displayProducts(items){
+  let container = document.getElementById("productList");
+  container.innerHTML="";
+  items.forEach(p=>{
+    container.innerHTML += `<div class="product">${p.name} - $${p.price}</div>`;
+  });
+}
+
+displayProducts(products);
+
+function filterProducts(){
+  let val = document.getElementById("search").value.toLowerCase();
+  let filtered = products.filter(p=>p.name.toLowerCase().includes(val));
+  displayProducts(filtered);
+}
+
+function sortProducts(type){
+  let sorted = [...products];
+
+  if(type==="low"){
+    sorted.sort((a,b)=>a.price-b.price);
+  } else if(type==="high"){
+    sorted.sort((a,b)=>b.price-a.price);
+  }
+
+  displayProducts(sorted);
+}
+
+function validateForm(){
+  let name = document.getElementById("name").value;
+  let email = document.getElementById("email").value;
+
+  if(name==="" || email===""){
+    alert("Please fill all fields");
+    return false;
+  }
+
+  alert("Message sent!");
+  return true;
+}
+
+
+let fades = document.querySelectorAll(".fade");
+
+window.addEventListener("scroll", ()=>{
+  fades.forEach(el=>{
+    let top = el.getBoundingClientRect().top;
+    if(top < window.innerHeight - 50){
+      el.classList.add("show");
+    }
+  });
 });
